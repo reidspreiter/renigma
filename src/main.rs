@@ -19,6 +19,7 @@ static REFLECTOR_SETTINGS: phf::Map<&str, &str> = phf_map! {
     "UKWC" => "favbpcjdieogyhrkzlxmwntqus",
 };
 
+// pairs[0] mapped to pairs[1], pairs[2] to pairs[3], etc... 
 fn map_by_pair(pairs: &str) -> BiMap<u8, u8> {
     let mut map = BiMap::new();
     let mut chars = pairs.chars();
@@ -28,6 +29,7 @@ fn map_by_pair(pairs: &str) -> BiMap<u8, u8> {
     map
 }
 
+// scrambled_alpha[0] mapped to 'a', scrambled_alpha[1] to 'b', etc...
 fn map_against_alpha(scrambled_alpha: &str) -> BiMap<u8, u8> {
     let mut map = BiMap::new();
     let mut alpha_c = b'a';
@@ -58,14 +60,14 @@ impl Rotor {
     }
 
     pub fn through_forwards(&self, c: &mut u8) {
-        if let Some(new_c) = self.settings.get_by_left(&c) {
-            *c = *new_c;
+        if let Some(new_c) = self.settings.get_by_left(&self.shift(c)) {
+            *c = self.shift(new_c);
         }
     }
 
     pub fn through_backwards(&self, c: &mut u8) {
-        if let Some(new_c) = self.settings.get_by_right(&c) {
-            *c = *new_c;
+        if let Some(new_c) = self.settings.get_by_right(&self.unshift(c)) {
+            *c = self.unshift(new_c);
         }
     }
 
@@ -75,6 +77,16 @@ impl Rotor {
 
     pub fn at_notch(&self) -> bool {
         self.curr_pos == self.notch_pos
+    }
+
+    fn shift(&self, c: &u8) -> u8 {
+        ((*c as i8 - 'a' as i8 + self.curr_pos as i8) % 26) as u8 + 'a' as u8
+    }
+
+    fn unshift(&self, c: &u8) -> u8 {
+        let offset = (*c as i8 - 'a' as i8) - self.curr_pos as i8;
+        let new_c = ((offset + 26) % 26) as u8;
+        'a' as u8 + new_c
     }
 }
 
@@ -140,24 +152,41 @@ impl Enigma {
         }
     }
 
-    pub fn encode(&mut self, plaintext: &str) -> String{
+    pub fn encode(&mut self, plaintext: &str, adjust_spacing: bool, keep_punc: bool, preserve_case: bool) -> String {
         let mut ciphertext = String::new();
+        let mut index: u8 = 1;
         for c in plaintext.chars() {
-            let mut c_byte = c as u8;
+            let is_upper = c.is_ascii_uppercase();
+            let mut c_byte = c.to_ascii_lowercase() as u8;
+
             if c.is_alphabetic() {
                 self.through(&mut c_byte);
+            } else if (c.is_whitespace() && adjust_spacing) || (!c.is_whitespace() && !keep_punc) {
+                continue;
+            }
+
+            if is_upper && preserve_case {
+                c_byte.make_ascii_uppercase();
             }
             ciphertext.push(c_byte as char);
+
+            if adjust_spacing {
+                index += 1;
+                if  index % 6 == 0 {
+                    ciphertext.push(' ');
+                    index = 1;
+                }
+            }
         }
         ciphertext
     }
 
-    pub fn through(&mut self, c: &mut u8) {
-        // self.turn_rotors();
+    fn through(&mut self, c: &mut u8) {
+        self.turn_rotors();
         self.plugboard.through(c);
-        // self.through_rotors_forwards(c);
+        self.through_rotors_forwards(c);
         self.reflector.through(c);
-        // self.through_rotors_backwards(c);
+        self.through_rotors_backwards(c);
         self.plugboard.through(c);
     }
 
@@ -165,11 +194,14 @@ impl Enigma {
         let turn_rot2 = self.rotors[0].at_notch();
         let turn_rot3 = self.rotors[1].at_notch();
         if turn_rot3 {
+            //println!("Turn 3");
             self.rotors[2].turn();
         }
         if turn_rot2 {
+            //println!("Turn 2");
             self.rotors[1].turn();
         }
+        //println!("Turn 1");
         self.rotors[0].turn();
     }
 
@@ -190,11 +222,22 @@ fn main() {
     let mut enigma = Enigma::new(
         "abghfi",
         "UKWA",
-        "II", 0,
-        "I", 24,
-        "V", 9,
+        "II", 23,
+        "I", 1,
+        "V", 0,
     );
-    let plaintext = "I love cheese";
-    let ciphertext = enigma.encode(plaintext);
+    let plaintext = "She sat deep in thought, for the room was on fire!";
+    let ciphertext = enigma.encode(plaintext, false, true, true);
     println!("{}", ciphertext);
+
+    let mut enigma = Enigma::new(
+        "abghfi",
+        "UKWA",
+        "II", 23,
+        "I", 1,
+        "V", 0,
+    );
+    let should_be_plain = enigma.encode(&ciphertext, false, true, true);
+    assert_eq!(plaintext, should_be_plain);
+    println!("{}", should_be_plain);
 }
