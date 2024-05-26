@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enigma</title>
+</head>
+<style>
+    label, input {
+        display: block;
+    }
+
+    label {
+        margin-top: 10px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    textarea {
+        width: 100%;
+        resize: none;
+        height: 90%;
+        box-sizing: border-box;
+        padding: 6px;
+    }
+
+    input[type="text"], textarea {
+        margin-top: 3px;
+    }
+
+    input[type="number"] {
+        width: 50%;
+    }
+
+    #container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    #box {
+        width: 30%;
+        min-height: 90%;
+        padding: 10px;
+        background-color: #e1e1e1;
+        border: 1px solid #6e6e6e;
+        margin: 8px;
+        box-sizing: border-box;
+    }
+
+    #rotorcontainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    #rotorbox {
+        border: 1px solid #6e6e6e;
+        margin: 6px;
+        padding: 6px;
+        align-items: center;
+    }
+
+    #rotorbox, label {
+        margin-top: 2px;
+    }
+
+    #reflectors {
+        margin-bottom: 10px;
+    }
+
+    #submit {
+        margin-top: 6px;
+    }
+
+
+</style>
+<body>
+    <h1>Enigma</h1>
+    <form action="javascript:encode()" id="container">
+        <div id="box">
+            <label for="plaintext">Plaintext</label>
+            <textarea name="plaintext" id="plaintext" placeholder="Enter text to encode..."></textarea>
+        </div>
+        <div id="box">
+            <label for="reflectors">Reflector</label>
+            <select name="reflectors" id="reflectors" required>
+                <option value="UKWA">UKW A</option>
+                <option value="UKWB">UKW B</option>
+                <option value="UKWC">UKW C</option>
+            </select>
+            <div id="rotorcontainer">
+                <div id="rotorbox">
+                    <label for="rotor1">Rotor 1</label>
+                    <select name="rotor1" id="rotor1" required>
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                        <option value="V">V</option>
+                    </select>
+                    <label for="rotor1pos">Position</label>
+                    <input type="number" min="1" max="26" step="1"  required>
+                </div>
+                <div id="rotorbox">
+                    <label for="rotor2">Rotor 2</label>
+                    <select name="rotor2" id="rotor2" required>
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                        <option value="V">V</option>
+                    </select>
+                    <label for="rotor2pos">Position</label>
+                    <input type="number" min="1" max="26" step="1" required>
+                </div>
+                <div id="rotorbox">
+                    <label for="rotor3">Rotor 3</label>
+                    <select name="rotor3" id="rotor3" required>
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                        <option value="V">V</option>
+                    </select>
+                    <label for="rotor3pos">Position</label>
+                    <input type="number" min="1" max="26" step="1" required>
+                </div>
+            </div>
+            <label for="plugs">Plugboard</label>
+            <input type="text" id="plugs" name="plugs" placeholder="ab jk hi...">
+            <label for="case">Preserve Case</label>
+            <input type="checkbox" name="case" id="case"></input>
+            <label for="punc">Preserve Punctuation</label>
+            <input type="checkbox" name="punc" id="punc"></input>
+            <label for="punc">Preserve Spacing</label>
+            <input type="checkbox" name="space" id="space"></input>
+            <button type="submit" id="submit">Encode</button>
+        </div>
+        <div id="box">
+            <label for="ciphertext">Ciphertext</label>
+            <textarea name="ciphertext" id="ciphertext" placeholder="Results pending..."></textarea>
+        </div>
+    </form>
+</body>
+</html>

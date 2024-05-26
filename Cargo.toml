@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 phf = { version = "0.11.2", features = ["macros"] }
 bimap = "0.6.3"
+actix-web = "4"
+actix-files = "0.6.5"
