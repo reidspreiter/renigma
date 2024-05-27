@@ -7,7 +7,7 @@ use std::path::PathBuf;
 
 #[get("/")]
 async fn index() -> actix_web::Result<NamedFile> {
-    let path: PathBuf = "./index.html".parse().unwrap();
+    let path: PathBuf = "./src/static/index.html".parse().unwrap();
     Ok(NamedFile::open(path)?)
 }
 

@@ -1,0 +1,79 @@
+label, input {
+    display: block;
+}
+
+h1 {
+    text-align: center;
+}
+
+textarea {
+    resize: none;
+    padding: 6px;
+    flex-grow: 1;
+}
+
+input[type="text"], textarea {
+    margin-top: 3px;
+}
+
+input[type="number"], select, input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: white;
+    border: 1px solid #6e6e6e;
+}
+
+button:hover {
+    background-color: rgb(231, 231, 231);
+    cursor: pointer;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.box {
+    width: 30%;
+    min-height: 400px;
+    min-width: 300px;
+    padding: 10px;
+    background-color: #d6d6d6;
+    border: 1px solid #6e6e6e;
+    margin: 8px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.rotor-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.rotor-box {
+    border: 1px solid #6e6e6e;
+    margin: 6px;
+    padding: 6px;
+}
+
+.checkbox-container {
+    display: inline-flex;
+}
+
+#rotor-error, #plug-error {
+    background-color: rgb(252, 154, 154);
+    border: 3px solid red;
+    font-size: 14px;
+    padding: 3px;
+}
+
+.hide {
+    display: none;
+}

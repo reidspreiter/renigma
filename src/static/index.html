@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enigma</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <h1>Enigma</h1>
+    <form id="encode-form" class="container">
+        <div class="box">
+            <label for="plaintext">Plaintext</label>
+            <textarea name="plaintext" id="plaintext" placeholder="Enter text to encode..." required></textarea>
+        </div>
+        <div class="box">
+            <div>
+                <label for="reflectors">Reflector</label>
+                <select name="reflectors" id="reflectors" required>
+                    <option value="UKWA">UKW A</option>
+                    <option value="UKWB">UKW B</option>
+                    <option value="UKWC">UKW C</option>
+                </select>
+            </div>
+            <div class="rotor-container">
+                <div class="rotor-box">
+                    <label for="rotor1">Rotor 1</label>
+                    <select name="rotor1" id="rotor1" class="rotor" required>
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                        <option value="V">V</option>
+                    </select>
+                    <label for="rotor1-pos">Position</label>
+                    <input type="number" min="1" max="26" step="1" class="pos" name="rotor1-pos" id="rotor1-pos" required>
+                </div>
+                <div class="rotor-box">
+                    <label for="rotor2">Rotor 2</label>
+                    <select name="rotor2" id="rotor2" class="rotor" required>
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                        <option value="V">V</option>
+                    </select>
+                    <label for="rotor2-pos">Position</label>
+                    <input type="number" min="1" max="26" step="1" class="pos" name="rotor2-pos" id="rotor2-pos" required>
+                </div>
+                <div class="rotor-box">
+                    <label for="rotor3">Rotor 3</label>
+                    <select name="rotor3" id="rotor3" class="rotor" required>
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                        <option value="V">V</option>
+                    </select>
+                    <label for="rotor3-pos">Position</label>
+                    <input type="number" min="1" max="26" step="1" class="pos" name="rotor3-pos" id="rotor3-pos" required>
+                </div>
+            </div>
+            <div id="rotor-error" class="hide"></div>
+            <div>
+                <label for="plugs">Plugboard</label>
+                <input type="text" id="plugs" name="plugs" placeholder="ab jk hi...">
+            </div>
+            <div id="plug-error" class="hide"></div>
+            <div class="checkbox-container">
+                <input type="checkbox" name="case" id="case"></input>
+                <label for="case">Preserve Case</label>
+            </div>
+            <div class="checkbox-container">
+                <input type="checkbox" name="punc" id="punc"></input>
+                <label for="punc">Preserve Punctuation</label>
+            </div>
+            <div class="checkbox-container">
+                <input type="checkbox" name="space" id="space"></input>
+                <label for="punc">Preserve Spacing</label>
+            </div>
+            <button type="submit" id="submit">Encode</button>
+        </div>
+        <div class="box">
+            <label for="ciphertext">Ciphertext</label>
+            <textarea name="ciphertext" id="ciphertext" placeholder="Results pending..."></textarea>
+        </div>
+    </form>
+</body>
+</html>
