@@ -10,28 +10,33 @@
         display: block;
     }
 
-    label {
-        margin-top: 10px;
-    }
-
     h1 {
         text-align: center;
     }
 
     textarea {
-        width: 100%;
         resize: none;
-        height: 90%;
-        box-sizing: border-box;
         padding: 6px;
+        flex-grow: 1;
     }
 
     input[type="text"], textarea {
         margin-top: 3px;
     }
 
-    input[type="number"] {
-        width: 50%;
+    input[type="number"], select, input[type="text"] {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: white;
+        border: 1px solid #6e6e6e;
+    }
+
+    button:hover {
+        background-color: rgb(231, 231, 231);
+        cursor: pointer;
     }
 
     #container {
@@ -42,101 +47,117 @@
 
     #box {
         width: 30%;
-        min-height: 90%;
+        min-height: 400px;
+        min-width: 300px;
         padding: 10px;
-        background-color: #e1e1e1;
+        background-color: #d6d6d6;
         border: 1px solid #6e6e6e;
         margin: 8px;
         box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
-    #rotorcontainer {
+    #rotor-container {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
     }
 
-    #rotorbox {
+    #rotor-box {
         border: 1px solid #6e6e6e;
         margin: 6px;
         padding: 6px;
-        align-items: center;
     }
 
-    #rotorbox, label {
-        margin-top: 2px;
+    #checkbox-container {
+        display: inline-flex;
     }
 
-    #reflectors {
-        margin-bottom: 10px;
+    #rotor-error, #plug-error {
+        background-color: rgb(252, 154, 154);
+        border: 3px solid red;
+        font-size: 14px;
+        padding: 3px;
     }
 
-    #submit {
-        margin-top: 6px;
+    .hide {
+        display: none;
     }
-
-
 </style>
 <body>
     <h1>Enigma</h1>
     <form action="javascript:encode()" id="container">
         <div id="box">
             <label for="plaintext">Plaintext</label>
-            <textarea name="plaintext" id="plaintext" placeholder="Enter text to encode..."></textarea>
+            <textarea name="plaintext" id="plaintext" placeholder="Enter text to encode..." required></textarea>
         </div>
         <div id="box">
-            <label for="reflectors">Reflector</label>
-            <select name="reflectors" id="reflectors" required>
-                <option value="UKWA">UKW A</option>
-                <option value="UKWB">UKW B</option>
-                <option value="UKWC">UKW C</option>
-            </select>
-            <div id="rotorcontainer">
-                <div id="rotorbox">
+            <div>
+                <label for="reflectors">Reflector</label>
+                <select name="reflectors" id="reflectors" required>
+                    <option value="UKWA">UKW A</option>
+                    <option value="UKWB">UKW B</option>
+                    <option value="UKWC">UKW C</option>
+                </select>
+            </div>
+            <div id="rotor-container">
+                <div id="rotor-box">
                     <label for="rotor1">Rotor 1</label>
-                    <select name="rotor1" id="rotor1" required>
+                    <select name="rotor1" id="rotor1" class="rotor" required>
                         <option value="I">I</option>
                         <option value="II">II</option>
                         <option value="III">III</option>
                         <option value="IV">IV</option>
                         <option value="V">V</option>
                     </select>
-                    <label for="rotor1pos">Position</label>
-                    <input type="number" min="1" max="26" step="1"  required>
+                    <label for="rotor1-pos">Position</label>
+                    <input type="number" min="1" max="26" step="1" class="pos" name="rotor1-pos" id="rotor1-pos" required>
                 </div>
-                <div id="rotorbox">
+                <div id="rotor-box">
                     <label for="rotor2">Rotor 2</label>
-                    <select name="rotor2" id="rotor2" required>
+                    <select name="rotor2" id="rotor2" class="rotor" required>
                         <option value="I">I</option>
                         <option value="II">II</option>
                         <option value="III">III</option>
                         <option value="IV">IV</option>
                         <option value="V">V</option>
                     </select>
-                    <label for="rotor2pos">Position</label>
-                    <input type="number" min="1" max="26" step="1" required>
+                    <label for="rotor2-pos">Position</label>
+                    <input type="number" min="1" max="26" step="1" class="pos" name="rotor2-pos" id="rotor2-pos" required>
                 </div>
-                <div id="rotorbox">
+                <div id="rotor-box">
                     <label for="rotor3">Rotor 3</label>
-                    <select name="rotor3" id="rotor3" required>
+                    <select name="rotor3" id="rotor3" class="rotor" required>
                         <option value="I">I</option>
                         <option value="II">II</option>
                         <option value="III">III</option>
                         <option value="IV">IV</option>
                         <option value="V">V</option>
                     </select>
-                    <label for="rotor3pos">Position</label>
-                    <input type="number" min="1" max="26" step="1" required>
+                    <label for="rotor3-pos">Position</label>
+                    <input type="number" min="1" max="26" step="1" class="pos" name="rotor3-pos" id="rotor3-pos" required>
                 </div>
             </div>
-            <label for="plugs">Plugboard</label>
-            <input type="text" id="plugs" name="plugs" placeholder="ab jk hi...">
-            <label for="case">Preserve Case</label>
-            <input type="checkbox" name="case" id="case"></input>
-            <label for="punc">Preserve Punctuation</label>
-            <input type="checkbox" name="punc" id="punc"></input>
-            <label for="punc">Preserve Spacing</label>
-            <input type="checkbox" name="space" id="space"></input>
+            <div id="rotor-error" class="hide"></div>
+            <div>
+                <label for="plugs">Plugboard</label>
+                <input type="text" id="plugs" name="plugs" placeholder="ab jk hi...">
+            </div>
+            <div id="plug-error" class="hide"></div>
+            <div id="checkbox-container">
+                <input type="checkbox" name="case" id="case"></input>
+                <label for="case">Preserve Case</label>
+            </div>
+            <div id="checkbox-container">
+                <input type="checkbox" name="punc" id="punc"></input>
+                <label for="punc">Preserve Punctuation</label>
+            </div>
+            <div id="checkbox-container">
+                <input type="checkbox" name="space" id="space"></input>
+                <label for="punc">Preserve Spacing</label>
+            </div>
             <button type="submit" id="submit">Encode</button>
         </div>
         <div id="box">
@@ -144,5 +165,86 @@
             <textarea name="ciphertext" id="ciphertext" placeholder="Results pending..."></textarea>
         </div>
     </form>
+    <script>
+        const defaultSelections = ["I", "II", "III"];
+        const rotorError = document.getElementById("rotor-error");
+        const rotorSelectors = document.querySelectorAll(".rotor");
+        let validRotors = true;
+        rotorSelectors.forEach((selector, index) => {
+            selector.value = defaultSelections[index];
+            selector.addEventListener("change", () => {
+                const selectedRotors = Array.from(rotorSelectors).map(selector => selector.value);
+                const selected = new Set();
+                let duplicateRotor = "";
+                validRotors = true;
+                for (const rotor of selectedRotors) {
+                    if (selected.has(rotor)) {
+                        validRotors = false;
+                        duplicateRotor = rotor;
+                        break;
+                    }
+                    selected.add(rotor);
+                }
+
+                if (validRotors) {
+                    rotorError.classList.add("hide");
+                } else {
+                    rotorError.innerText = `Duplicate rotor: Rotor ${duplicateRotor} is selected multiple times`
+                    rotorError.classList.remove("hide");
+                }
+            });
+        });
+
+        document.querySelectorAll(".pos").forEach(text => {
+            text.value = 1;
+        });
+
+        const plugboardInput = document.getElementById("plugs");
+        const plugError = document.getElementById("plug-error");
+        let validFormat = true;
+        let validPairs = true;
+        plugboardInput.addEventListener("input", () => {
+            const value = plugboardInput.value.trim().toLowerCase();
+            validFormat = /^(\s*[a-z]{2}\s*)*$/i.test(value);
+
+            const pairs = value.split(/\s+/);
+            const usedLetters = new Set();
+            let duplicateLetter = "";
+            validPairs = true;
+            for (const pair of pairs) {
+                for (const letter of pair) {
+                    if (usedLetters.has(letter)) {
+                        duplicateLetter = letter;
+                        validPairs = false;
+                    } else {
+                        usedLetters.add(letter);
+                    }
+                }
+                if (validPairs) {
+                    break;
+                }
+            }
+
+            if (validFormat && validPairs) {
+                plugError.classList.add("hide");
+            } else if (!validFormat) {
+                plugError.innerText = `Invalid format: Please enter two-letter pairs separated by spaces "xy ab gh..."`;
+                plugError.classList.remove("hide");
+            } else if (!validPairs) {
+                plugError.innerText = `Duplicate letter: ${duplicateLetter} is plugged multiple times`
+                plugError.classList.remove("hide");
+            }
+        });
+
+        function encode() {
+            if (!validFormat || !validPairs) {
+                alert("Cannot encode plaintext until plugboard errors are resolved");
+                return;
+            } else if (!validRotors) {
+                alert("Cannot encode plaintext until rotor errors are resolved");
+                return;
+            }
+        }
+    </script>
 </body>
 </html>
