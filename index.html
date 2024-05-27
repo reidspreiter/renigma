@@ -39,13 +39,13 @@
         cursor: pointer;
     }
 
-    #container {
+    .container {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
     }
 
-    #box {
+    .box {
         width: 30%;
         min-height: 400px;
         min-width: 300px;
@@ -59,19 +59,19 @@
         justify-content: space-between;
     }
 
-    #rotor-container {
+    .rotor-container {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
     }
 
-    #rotor-box {
+    .rotor-box {
         border: 1px solid #6e6e6e;
         margin: 6px;
         padding: 6px;
     }
 
-    #checkbox-container {
+    .checkbox-container {
         display: inline-flex;
     }
 
@@ -88,12 +88,12 @@
 </style>
 <body>
     <h1>Enigma</h1>
-    <form action="javascript:encode()" id="container">
-        <div id="box">
+    <form id="encode-form" class="container">
+        <div class="box">
             <label for="plaintext">Plaintext</label>
             <textarea name="plaintext" id="plaintext" placeholder="Enter text to encode..." required></textarea>
         </div>
-        <div id="box">
+        <div class="box">
             <div>
                 <label for="reflectors">Reflector</label>
                 <select name="reflectors" id="reflectors" required>
@@ -102,8 +102,8 @@
                     <option value="UKWC">UKW C</option>
                 </select>
             </div>
-            <div id="rotor-container">
-                <div id="rotor-box">
+            <div class="rotor-container">
+                <div class="rotor-box">
                     <label for="rotor1">Rotor 1</label>
                     <select name="rotor1" id="rotor1" class="rotor" required>
                         <option value="I">I</option>
@@ -115,7 +115,7 @@
                     <label for="rotor1-pos">Position</label>
                     <input type="number" min="1" max="26" step="1" class="pos" name="rotor1-pos" id="rotor1-pos" required>
                 </div>
-                <div id="rotor-box">
+                <div class="rotor-box">
                     <label for="rotor2">Rotor 2</label>
                     <select name="rotor2" id="rotor2" class="rotor" required>
                         <option value="I">I</option>
@@ -127,7 +127,7 @@
                     <label for="rotor2-pos">Position</label>
                     <input type="number" min="1" max="26" step="1" class="pos" name="rotor2-pos" id="rotor2-pos" required>
                 </div>
-                <div id="rotor-box">
+                <div class="rotor-box">
                     <label for="rotor3">Rotor 3</label>
                     <select name="rotor3" id="rotor3" class="rotor" required>
                         <option value="I">I</option>
@@ -146,21 +146,21 @@
                 <input type="text" id="plugs" name="plugs" placeholder="ab jk hi...">
             </div>
             <div id="plug-error" class="hide"></div>
-            <div id="checkbox-container">
+            <div class="checkbox-container">
                 <input type="checkbox" name="case" id="case"></input>
                 <label for="case">Preserve Case</label>
             </div>
-            <div id="checkbox-container">
+            <div class="checkbox-container">
                 <input type="checkbox" name="punc" id="punc"></input>
                 <label for="punc">Preserve Punctuation</label>
             </div>
-            <div id="checkbox-container">
+            <div class="checkbox-container">
                 <input type="checkbox" name="space" id="space"></input>
                 <label for="punc">Preserve Spacing</label>
             </div>
             <button type="submit" id="submit">Encode</button>
         </div>
-        <div id="box">
+        <div class="box">
             <label for="ciphertext">Ciphertext</label>
             <textarea name="ciphertext" id="ciphertext" placeholder="Results pending..."></textarea>
         </div>
@@ -236,7 +236,27 @@
             }
         });
 
-        function encode() {
+        function handleError(error) {
+            alert(`Error encoding text: ${error}`);
+        }
+
+        async function encode(formData) {
+            try {
+                const response = await fetch("/encode", {
+                    method: "POST",
+                    body: formData,
+                });
+                const data = await response.json();
+                ciphertext.innerText = data;
+            } catch (error) {
+                handleError(error);
+            }
+        }
+
+        const ciphertext = document.getElementById("ciphertext");
+        const encodeForm = document.getElementById("encode-form");
+        encodeForm.addEventListener("submit", (event) => {
+            event.preventDefault();
             if (!validFormat || !validPairs) {
                 alert("Cannot encode plaintext until plugboard errors are resolved");
                 return;
@@ -244,7 +264,10 @@
                 alert("Cannot encode plaintext until rotor errors are resolved");
                 return;
             }
-        }
+
+            const formData = new FormData(encodeForm);
+            encode(formData);
+        })
     </script>
 </body>
 </html>
