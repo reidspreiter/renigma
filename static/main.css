@@ -1,3 +1,7 @@
+body {
+    background-color: #f7e6ff;
+}
+
 label, input {
     display: block;
 }
@@ -12,6 +16,10 @@ textarea {
     flex-grow: 1;
 }
 
+input, .box, button, textarea, .rotor-box, select {
+    border-radius: 6px;
+}
+
 input[type="text"], textarea {
     margin-top: 3px;
 }
@@ -22,12 +30,18 @@ input[type="number"], select, input[type="text"] {
 }
 
 button {
-    background-color: white;
-    border: 1px solid #6e6e6e;
+    background-color: #9300ff;
+    border: 2px solid #6100a6;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    color: white;
+    transition: 
+        background-color 0.3s ease-out,
+        box-shadow 0.3s ease-out;
 }
 
 button:hover {
-    background-color: rgb(231, 231, 231);
+    background-color: #6100a6;
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
     cursor: pointer;
 }
 
@@ -42,13 +56,13 @@ button:hover {
     min-height: 400px;
     min-width: 300px;
     padding: 10px;
-    background-color: #d6d6d6;
-    border: 1px solid #6e6e6e;
     margin: 8px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background-color: #ca8dfd;
+    border: 4px solid #c074ff;
 }
 
 .rotor-container {
@@ -58,9 +72,10 @@ button:hover {
 }
 
 .rotor-box {
-    border: 1px solid #6e6e6e;
+    border: 1px solid #9300ff;
     margin: 6px;
     padding: 6px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .checkbox-container {
@@ -68,10 +83,11 @@ button:hover {
 }
 
 #rotor-error, #plug-error {
-    background-color: rgb(252, 154, 154);
-    border: 3px solid red;
+    background-color: rgb(255, 234, 156);
+    border: 3px solid rgb(255, 187, 0);
     font-size: 14px;
     padding: 3px;
+    min-height: 38px;
 }
 
 .hide {

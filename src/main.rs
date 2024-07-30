@@ -1,21 +1,15 @@
 mod enigma;
-use enigma::Enigma;
+use enigma::{Enigma, EnigmaSettings};
 
-use actix_files::NamedFile;
-use actix_web::{get, post, web, App, HttpResponse, HttpServer};
-use std::path::PathBuf;
+use actix_files::Files;
+use actix_web::{post, web, App, HttpServer, Responder, Result};
 
-#[get("/")]
-async fn index() -> actix_web::Result<NamedFile> {
-    let path: PathBuf = "./src/static/index.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
-}
 
 #[post("/encode")]
-async fn encode(data: web::Json<String>) -> HttpResponse {
-    println!("POSTING YAY");
-    println!("{}", data);
-    HttpResponse::Ok().json("Recieved")
+async fn encode(settings: web::Json<EnigmaSettings>) -> Result<impl Responder> {
+    let mut enigma = Enigma::new(&settings);
+    let ciphertext = enigma.encode(&settings);
+    Ok(web::Json(ciphertext))
 }
 
 
@@ -23,7 +17,9 @@ async fn encode(data: web::Json<String>) -> HttpResponse {
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
-            .service(index)
+            .service(encode)
+            .service(Files::new("/static", "static/").show_files_listing())
+            .service(Files::new("/", "./static/").index_file("index.html"))
     })
     .bind(("127.0.0.1", 8080))?
     .run()

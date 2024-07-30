@@ -1,5 +1,28 @@
 use phf::phf_map;
 use bimap::BiMap;
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+pub struct EnigmaSettings {
+    plaintext: String,
+    reflector: String,
+    rotor1: String,
+    #[serde(alias = "rotor1-pos")]
+    rotor1_pos: u8,
+    rotor2: String,
+    #[serde(alias = "rotor2-pos")]
+    rotor2_pos: u8,
+    rotor3: String,
+    #[serde(alias = "rotor3-pos")]
+    rotor3_pos: u8,
+    plugboard: String,
+    #[serde(alias = "case")]
+    preserve_case: bool,
+    #[serde(alias = "punc")]
+    preserve_punctuation: bool,
+    #[serde(alias = "space")]
+    preserve_spacing: bool,
+}
 
 // key: rotor_name
 // value: scrambled alphabet, notch position
@@ -139,38 +162,37 @@ pub struct Enigma {
 }
 
 impl Enigma {
-    pub fn new(plug_pairs: &str, reflector_name: &str, rot1_name: &str, rot1_pos: u8, 
-        rot2_name: &str, rot2_pos: u8, rot3_name: &str, rot3_pos: u8) -> Self {
+    pub fn new(settings: &EnigmaSettings) -> Self {
         Enigma {
-            plugboard: Plugboard::new(plug_pairs),
-            reflector: Reflector::new(reflector_name),
+            plugboard: Plugboard::new(&settings.plugboard),
+            reflector: Reflector::new(&settings.reflector),
             rotors: [
-                Rotor::new(rot1_name, rot1_pos), 
-                Rotor::new(rot2_name, rot2_pos), 
-                Rotor::new(rot3_name, rot3_pos)
+                Rotor::new(&settings.rotor1, settings.rotor1_pos),
+                Rotor::new(&settings.rotor2, settings.rotor2_pos),
+                Rotor::new(&settings.rotor3, settings.rotor3_pos),
             ],
         }
     }
 
-    pub fn encode(&mut self, plaintext: &str, adjust_spacing: bool, keep_punc: bool, preserve_case: bool) -> String {
+    pub fn encode(&mut self, settings: &EnigmaSettings) -> String {
         let mut ciphertext = String::new();
         let mut index: u8 = 1;
-        for c in plaintext.chars() {
+        for c in settings.plaintext.chars() {
             let is_upper = c.is_ascii_uppercase();
             let mut c_byte = c.to_ascii_lowercase() as u8;
 
             if c.is_alphabetic() {
                 self.through(&mut c_byte);
-            } else if (c.is_whitespace() && adjust_spacing) || (!c.is_whitespace() && !keep_punc) {
+            } else if (c.is_whitespace() && !settings.preserve_spacing) || (!c.is_whitespace() && !settings.preserve_punctuation) {
                 continue;
             }
 
-            if is_upper && preserve_case {
+            if is_upper && settings.preserve_case {
                 c_byte.make_ascii_uppercase();
             }
             ciphertext.push(c_byte as char);
 
-            if adjust_spacing {
+            if !settings.preserve_spacing {
                 index += 1;
                 if  index % 6 == 0 {
                     ciphertext.push(' ');
@@ -194,14 +216,11 @@ impl Enigma {
         let turn_rot2 = self.rotors[0].at_notch();
         let turn_rot3 = self.rotors[1].at_notch();
         if turn_rot3 {
-            //println!("Turn 3");
             self.rotors[2].turn();
         }
         if turn_rot2 {
-            //println!("Turn 2");
             self.rotors[1].turn();
         }
-        //println!("Turn 1");
         self.rotors[0].turn();
     }
 

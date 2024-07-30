@@ -939,6 +939,7 @@ dependencies = [
  "actix-web",
  "bimap",
  "phf",
+ "serde",
 ]
 
 [[package]]
